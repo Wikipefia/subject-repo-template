@@ -46,18 +46,18 @@ subject-repo-template/
 
 `config.json` must conform to the `SubjectConfig` Zod schema. All fields are documented below:
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `slug` | `string` | Yes | URL-safe identifier (`^[a-z0-9-]+$`). Must be globally unique across all subjects, teachers, and system articles. |
-| `name` | `LocalizedString` | Yes | Display name in all locales (`{ ru, en, cz }`). |
-| `description` | `LocalizedString` | Yes | Short description in all locales. |
-| `teachers` | `string[]` | Yes | Array of teacher slugs who teach this subject. |
-| `keywords` | `LocalizedKeywords` | Yes | Search keywords per locale (`{ ru: [...], en: [...], cz: [...] }`). |
-| `categories` | `Category[]` | Yes | Article groupings. Each has `slug`, `name`, and `articles[]`. |
-| `metadata.semester` | `number` | No | Semester number (e.g., `1`, `2`). |
-| `metadata.credits` | `number` | No | ECTS credits. |
-| `metadata.difficulty` | `"easy" \| "medium" \| "hard"` | No | Overall course difficulty. |
-| `metadata.department` | `LocalizedString` | No | Department name in all locales. |
+| Field                 | Type                           | Required | Description                                                                                                       |
+| --------------------- | ------------------------------ | -------- | ----------------------------------------------------------------------------------------------------------------- |
+| `slug`                | `string`                       | Yes      | URL-safe identifier (`^[a-z0-9-]+$`). Must be globally unique across all subjects, teachers, and system articles. |
+| `name`                | `LocalizedString`              | Yes      | Display name in all locales (`{ ru, en, cz }`).                                                                   |
+| `description`         | `LocalizedString`              | Yes      | Short description in all locales.                                                                                 |
+| `teachers`            | `string[]`                     | Yes      | Array of teacher slugs who teach this subject.                                                                    |
+| `keywords`            | `LocalizedKeywords`            | Yes      | Search keywords per locale (`{ ru: [...], en: [...], cz: [...] }`).                                               |
+| `categories`          | `Category[]`                   | Yes      | Article groupings. Each has `slug`, `name`, and `articles[]`.                                                     |
+| `metadata.semester`   | `number`                       | No       | Semester number (e.g., `1`, `2`).                                                                                 |
+| `metadata.credits`    | `number`                       | No       | ECTS credits.                                                                                                     |
+| `metadata.difficulty` | `"easy" \| "medium" \| "hard"` | No       | Overall course difficulty.                                                                                        |
+| `metadata.department` | `LocalizedString`              | No       | Department name in all locales.                                                                                   |
 
 ## Article Frontmatter Schema
 
@@ -69,19 +69,19 @@ title:
   ru: "Заголовок"
   en: "Title"
   cz: "Název"
-slug: "article-slug"          # Must match filename (without .mdx)
-author: "teacher-slug"        # Optional: teacher who wrote it
+slug: "article-slug" # Must match filename (without .mdx)
+author: "teacher-slug" # Optional: teacher who wrote it
 keywords:
   ru: ["ключевое слово"]
   en: ["keyword"]
   cz: ["klíčové slovo"]
-created: "2025-01-01"         # ISO date, required
-updated: "2025-06-01"         # ISO date, optional
-difficulty: "beginner"        # Optional: beginner | intermediate | advanced
-estimatedReadTime: 10         # Optional: minutes
-prerequisites:                # Optional: other article slugs in this subject
+created: "2025-01-01" # ISO date, required
+updated: "2025-06-01" # ISO date, optional
+difficulty: "beginner" # Optional: beginner | intermediate | advanced
+estimatedReadTime: 10 # Optional: minutes
+prerequisites: # Optional: other article slugs in this subject
   - "introduction"
-tutors:                       # Optional: teacher slugs who can tutor this topic
+tutors: # Optional: teacher slugs who can tutor this topic
   - "ivan-petrov"
 ---
 ```
@@ -90,15 +90,15 @@ tutors:                       # Optional: teacher slugs who can tutor this topic
 
 These custom components are available in all articles:
 
-| Component | Usage | Description |
-|---|---|---|
-| `<Callout type="info">` | Info/Warning/Error boxes | `type`: `info`, `warning`, `error` |
-| `<Quiz>` | Interactive quiz | Multiple choice questions with feedback |
-| `<Tabs>` | Tabbed content panels | Group related content under tabs |
-| `<MathBlock>` | LaTeX math display | Rendered math equations |
-| `<CodePlayground>` | Editable code | Interactive code editor |
-| `<Collapse>` | Expandable section | Click to reveal hidden content |
-| `<Figure>` | Image with caption | `src`, `alt`, `caption` props |
+| Component               | Usage                    | Description                             |
+| ----------------------- | ------------------------ | --------------------------------------- |
+| `<Callout type="info">` | Info/Warning/Error boxes | `type`: `info`, `warning`, `error`      |
+| `<Quiz>`                | Interactive quiz         | Multiple choice questions with feedback |
+| `<Tabs>`                | Tabbed content panels    | Group related content under tabs        |
+| `<MathBlock>`           | LaTeX math display       | Rendered math equations                 |
+| `<CodePlayground>`      | Editable code            | Interactive code editor                 |
+| `<Collapse>`            | Expandable section       | Click to reveal hidden content          |
+| `<Figure>`              | Image with caption       | `src`, `alt`, `caption` props           |
 
 Standard Markdown features: GFM tables, inline/block math (`$...$` / `$$...$$`), fenced code blocks with syntax highlighting, blockquotes, and footnotes.
 
@@ -113,6 +113,7 @@ Standard Markdown features: GFM tables, inline/block math (`$...$` / `$$...$$`),
 ### Validation (on PRs)
 
 The `validate.yml` workflow runs on every PR and checks:
+
 - `config.json` validates against the SubjectConfig Zod schema
 - All MDX frontmatter validates against ArticleFrontmatter schema
 - Every locale has a `_front.mdx`
