@@ -128,7 +128,7 @@ print(f"A \\ B = {difference}")
 
 ### Cardinality
 
-The **cardinality** of a set $A$, written $|A|$, is the number of elements it contains.
+The **cardinality** of a set $A$, written $\vert A \vert$, is the number of elements it contains.
 
 For finite sets $A$ and $B$, the **inclusion-exclusion principle** states:
 
@@ -146,9 +146,9 @@ $$
 Then:
 $$|A \cup B| = |A \setminus B| + |B \setminus A| + |A \cap B|$$
 
-Since $|A| = |A \setminus B| + |A \cap B|$, we get $|A \setminus B| = |A| - |A \cap B|$.
+Since $\vert A \vert = \vert A \setminus B \vert + \vert A \cap B \vert$, we get $\vert A \setminus B \vert = \vert A \vert - \vert A \cap B \vert$.
 
-Similarly, $|B \setminus A| = |B| - |A \cap B|$.
+Similarly, $\vert B \setminus A \vert = \vert B \vert - \vert A \cap B \vert$.
 
 Substituting:
 $$|A \cup B| = (|A| - |A \cap B|) + (|B| - |A \cap B|) + |A \cap B| = |A| + |B| - |A \cap B|$$
