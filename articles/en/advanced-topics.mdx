@@ -185,13 +185,13 @@ $$
 <CodePlayground language="python">
 def fib_naive(n: int) -> int:
     """Naive recursive Fibonacci — O(2^n) time!"""
-    if n <= 1:
+    if n &lt;= 1:
         return n
     return fib_naive(n - 1) + fib_naive(n - 2)
 
 def fib_dp(n: int) -> int:
     """Dynamic programming Fibonacci — O(n) time."""
-    if n <= 1:
+    if n &lt;= 1:
         return n
     prev, curr = 0, 1
     for _ in range(2, n + 1):
