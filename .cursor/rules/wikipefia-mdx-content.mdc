@@ -1,0 +1,88 @@
+---
+description: Guide for writing MDX content for Wikipefia subject repositories — frontmatter schema, available components, localization rules, and content structure.
+globs: "**/*.mdx"
+alwaysApply: false
+---
+
+# Wikipefia MDX Content Authoring
+
+## Frontmatter (Required)
+
+Every `.mdx` file must start with YAML frontmatter. The `slug` field must match the filename (without `.mdx`).
+
+```yaml
+---
+title:
+  ru: "Заголовок"
+  en: "Title"
+  cz: "Název"
+slug: "article-slug" # must match filename
+author: "teacher-slug" # optional
+keywords:
+  ru: ["ключевое слово"]
+  en: ["keyword"]
+  cz: ["klíčové slovo"]
+created: "2025-01-01" # ISO date, required
+updated: "2025-06-01" # optional
+difficulty: "beginner" # optional: beginner | intermediate | advanced
+estimatedReadTime: 10 # optional: minutes
+prerequisites: # optional: other article slugs in this subject
+  - "introduction"
+tutors: # optional: teacher slugs
+  - "ivan-petrov"
+---
+```
+
+**Required fields**: `title`, `slug`, `keywords`, `created`. All `LocalizedString` and `LocalizedKeywords` fields must include all three locales: `ru`, `en`, `cz`.
+
+## Front Pages (`_front.mdx`)
+
+Every locale directory must have `_front.mdx` with `slug: "_front"`. This renders as the subject's main page. It should contain: course overview, why the subject matters, course structure outline, prerequisites, and instructor info.
+
+## Available MDX Components
+
+```mdx
+<Callout type="info|warning|error">Content here</Callout>
+
+<Tabs>
+  <Tab label="Tab 1">Content</Tab>
+  <Tab label="Tab 2">Content</Tab>
+</Tabs>
+
+<Quiz>
+  <Question text="Question?">
+    <Option value="a">Wrong</Option>
+    <Option value="b" correct>
+      Correct
+    </Option>
+  </Question>
+</Quiz>
+
+<CodePlayground language="python">print("editable code")</CodePlayground>
+
+<Collapse title="Click to expand">Hidden content</Collapse>
+
+<MathBlock>\text{Displayed equation: } E = mc^2</MathBlock>
+
+<Figure src="/assets/image.svg" alt="description" caption="Caption text" />
+```
+
+## Math
+
+- Inline: `$E = mc^2$`
+- Block: `$$\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$$`
+
+## Localization
+
+- Articles don't need to exist in every locale — site falls back: requested → `en` → `ru`
+- All frontmatter strings (`title`, `keywords`) must include all 3 locales regardless
+- Write each locale's content in its native language, not machine-translated placeholders
+
+## Content Quality
+
+- Start with a clear `# Heading` matching the article title
+- Use progressive disclosure: fundamentals first, details in `<Collapse>` blocks
+- Include working code examples with comments
+- Use `<Callout type="warning">` for common mistakes
+- Use `<Callout type="info">` for tips and cross-references to other articles
+- Link to related articles: `[Core Concepts](/subject-slug/core-concepts)`

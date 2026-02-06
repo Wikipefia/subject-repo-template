@@ -1,0 +1,86 @@
+---
+description: Schemas and conventions for Wikipefia config.json files — subjects, teachers, and system articles.
+globs: "**/content/**/config.json"
+alwaysApply: false
+---
+
+# Wikipefia Config JSON Schemas
+
+All `config.json` files are validated with Zod at build time. Every user-facing string is a `LocalizedString` with all three locales required: `ru`, `en`, `cz`.
+
+## Subject Config (`content/subjects/<slug>/config.json`)
+
+```json
+{
+  "slug": "linear-algebra",                          // required, ^[a-z0-9-]+$, globally unique
+  "name": { "ru": "...", "en": "...", "cz": "..." }, // required
+  "description": { "ru": "...", "en": "...", "cz": "..." }, // required
+  "teachers": ["ivan-petrov"],                       // required, teacher slugs
+  "keywords": { "ru": [...], "en": [...], "cz": [...] }, // required
+  "categories": [                                    // required, at least one
+    {
+      "slug": "fundamentals",
+      "name": { "ru": "...", "en": "...", "cz": "..." },
+      "articles": ["vectors-intro"]                  // article slugs, must match .mdx filenames
+    }
+  ],
+  "metadata": {                                      // optional block
+    "semester": 1,                                   // optional number
+    "credits": 5,                                    // optional number
+    "difficulty": "medium",                          // optional: easy | medium | hard
+    "department": { "ru": "...", "en": "...", "cz": "..." } // optional LocalizedString
+  }
+}
+```
+
+## Teacher Config (`content/teachers/<slug>/config.json`)
+
+```json
+{
+  "slug": "ivan-petrov",                             // required, globally unique
+  "name": { "ru": "...", "en": "...", "cz": "..." }, // required
+  "description": { "ru": "...", "en": "...", "cz": "..." }, // required
+  "photo": "assets/photo.jpg",                       // optional, relative path
+  "subjects": ["linear-algebra"],                    // required, subject slugs
+  "ratings": {                                       // required
+    "overall": 4.5, "clarity": 4.8, "difficulty": 3.2, "usefulness": 4.6, "count": 127
+  },
+  "keywords": { "ru": [...], "en": [...], "cz": [...] }, // required
+  "contacts": {                                      // optional
+    "email": "petrov@uni.edu",                       // optional, valid email
+    "office": { "ru": "...", "en": "...", "cz": "..." }, // optional LocalizedString
+    "website": "https://..."                         // optional, valid URL
+  },
+  "reviews": [                                       // optional array
+    { "text": { "ru": "...", "en": "...", "cz": "..." }, "rating": 5, "date": "2025-06-15", "anonymous": true }
+  ],
+  "sections": [                                      // optional, groups teacher's articles
+    { "slug": "guides", "name": { "ru": "...", "en": "...", "cz": "..." }, "articles": ["teaching-philosophy"] }
+  ]
+}
+```
+
+## System Config (`content/system/config.json`)
+
+```json
+{
+  "articles": [
+    {
+      "slug": "semester-1-overview",                 // required, globally unique
+      "route": "/semester-1-overview",               // required, starts with /
+      "name": { "ru": "...", "en": "...", "cz": "..." }, // required
+      "description": { "ru": "...", "en": "...", "cz": "..." }, // optional
+      "keywords": { "ru": [...], "en": [...], "cz": [...] }, // required
+      "pinned": true,                                // optional, show on home page
+      "order": 1                                     // optional, sort priority
+    }
+  ]
+}
+```
+
+## Critical Rules
+
+- **Slug uniqueness**: All slugs (subjects + teachers + system articles) share one flat URL namespace. Duplicates cause a fatal build error.
+- **Reserved slugs**: `api`, `_next`, `not-found`, `search` cannot be used.
+- **Cross-references**: Teacher slugs in `subjects[].teachers` must exist as teacher dirs. Subject slugs in `teachers[].subjects` must exist as subject dirs. Article slugs in `categories[].articles` must have matching `.mdx` files.
+- **Ratings**: All values 0–5 (floats), `count` is a non-negative integer.
