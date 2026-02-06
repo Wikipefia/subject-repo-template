@@ -109,8 +109,7 @@ $$= p \land T = p$$
 
 Write a function that generates the powerset (set of all subsets) of a given set.
 
-<CodePlayground language="python">
-def powerset(s: set) -> list[set]:
+<CodePlayground language="python" code={`def powerset(s: set) -> list[set]:
     """Generate all subsets of set s.
 
     Hint: For each element, you can either include it or not.
@@ -133,8 +132,7 @@ ps = powerset(s)
 print(f"Powerset of {s}:")
 for subset in sorted(ps, key=lambda x: (len(x), sorted(x))):
     print(f"  {subset}")
-print(f"\nTotal subsets: {len(ps)} (expected: {2**len(s)})")
-</CodePlayground>
+print(f"\\nTotal subsets: {len(ps)} (expected: {2**len(s)})")`} />
 
 ## Section 3: Combinatorics
 
@@ -146,8 +144,7 @@ $$
 P(\text{at least one match}) = 1 - \frac{365!}{365^n \cdot (365-n)!}
 $$
 
-<CodePlayground language="python">
-from math import comb, factorial
+<CodePlayground language="python" code={`from math import comb, factorial
 import random
 
 def birthday_probability(n: int) -> float:
@@ -175,8 +172,7 @@ print("-" * 30)
 for n in [10, 20, 23, 30, 50, 70]:
     exact = birthday_probability(n)
     simulated = birthday_simulation(n)
-    print(f"{n:4d} | {exact:8.4f} | {simulated:10.4f}")
-</CodePlayground>
+    print(f"{n:4d} | {exact:8.4f} | {simulated:10.4f}")`} />
 
 <Callout type="info">
 With just 23 people, there's a >50% chance of a birthday match! This result surprises most people and is a classic example of how human intuition about probability is often wrong.
@@ -213,14 +209,13 @@ With just 23 people, there's a >50% chance of a birthday match! This result surp
 
 Implement Dijkstra's algorithm for finding the shortest path in a weighted graph.
 
-<CodePlayground language="python">
-import heapq
+<CodePlayground language="python" code={`import heapq
 
 def dijkstra(graph: dict, start: str) -> dict:
     """Find shortest distances from start to all vertices.
 
-    graph: {vertex: [(neighbor, weight), ...]}
-    Returns: {vertex: shortest_distance}
+    graph: dict mapping vertex to list of (neighbor, weight) tuples
+    Returns: dict mapping vertex to shortest_distance
     """
     distances = {v: float('inf') for v in graph}
     distances[start] = 0
@@ -251,8 +246,7 @@ graph = {
 distances = dijkstra(graph, 'A')
 print("Shortest distances from A:")
 for vertex, dist in sorted(distances.items()):
-    print(f"  A → {vertex}: {dist}")
-</CodePlayground>
+    print(f"  A -> {vertex}: {dist}")`} />
 
 ## Summary
 

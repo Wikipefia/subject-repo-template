@@ -119,7 +119,7 @@ Combinatorics answers the question: **"How many ways can we...?"**
 
 ### The Multiplication Principle
 
-If task 1 can be done in $m$ ways and task 2 in $n$ ways, the combined tasks can be done in $m \cdot n$ ways.
+If task 1 can be done in $m$ ways and task 2 in $n$ ways, then the combined tasks can be done in $m \times n$ ways.
 
 ### Permutations
 
@@ -137,9 +137,9 @@ $$
 \binom{n}{r} = \frac{n!}{r!(n-r)!}
 $$
 
-<MathBlock>
+$$
 \text{Key identity: } \binom{n}{r} = \binom{n}{n-r}
-</MathBlock>
+$$
 
 ```python
 from math import comb, perm, factorial
