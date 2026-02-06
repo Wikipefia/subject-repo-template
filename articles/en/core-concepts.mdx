@@ -1,0 +1,200 @@
+---
+title:
+  ru: "Основные концепции"
+  en: "Core Concepts"
+  cz: "Základní koncepty"
+slug: "core-concepts"
+author: "ivan-petrov"
+keywords:
+  ru: ["отношения", "функции", "комбинаторика", "перестановки", "сочетания"]
+  en: ["relations", "functions", "combinatorics", "permutations", "combinations"]
+  cz: ["relace", "funkce", "kombinatorika", "permutace", "kombinace"]
+created: "2025-02-01"
+updated: "2025-08-25"
+difficulty: "intermediate"
+estimatedReadTime: 18
+prerequisites:
+  - "introduction"
+---
+
+# Core Concepts
+
+Building on the foundations of logic and sets, we now explore **relations**, **functions**, and **combinatorics** — the three pillars that connect abstract discrete structures to practical computation.
+
+## Relations
+
+A **binary relation** $R$ from set $A$ to set $B$ is a subset of $A \times B$. We write $aRb$ (or $(a, b) \in R$) when $a$ is related to $b$.
+
+### Properties of Relations on a Set
+
+For a relation $R$ on a set $A$ (i.e., $R \subseteq A \times A$):
+
+| Property | Definition | Example |
+|---|---|---|
+| **Reflexive** | $\forall a \in A: aRa$ | $\leq$ on integers |
+| **Symmetric** | $aRb \implies bRa$ | "is sibling of" |
+| **Antisymmetric** | $aRb \land bRa \implies a = b$ | $\leq$ on integers |
+| **Transitive** | $aRb \land bRc \implies aRc$ | $<$ on integers |
+
+<Callout type="info">
+A relation that is reflexive, symmetric, and transitive is an **equivalence relation**. A relation that is reflexive, antisymmetric, and transitive is a **partial order**.
+</Callout>
+
+### Equivalence Classes
+
+An equivalence relation $\sim$ on $A$ partitions $A$ into disjoint **equivalence classes**:
+
+$$
+[a] = \{ x \in A \mid x \sim a \}
+$$
+
+```python
+def find_equivalence_classes(elements: list, is_equivalent) -> list[set]:
+    """Find equivalence classes given a relation."""
+    classes = []
+    assigned = set()
+
+    for elem in elements:
+        if elem in assigned:
+            continue
+        # Find all elements equivalent to this one
+        eq_class = {x for x in elements if is_equivalent(elem, x)}
+        classes.append(eq_class)
+        assigned.update(eq_class)
+
+    return classes
+
+# Example: integers mod 3
+numbers = list(range(10))
+mod3_classes = find_equivalence_classes(
+    numbers,
+    lambda a, b: a % 3 == b % 3
+)
+for cls in mod3_classes:
+    print(f"  {sorted(cls)}")
+# [0, 3, 6, 9]
+# [1, 4, 7]
+# [2, 5, 8]
+```
+
+## Functions
+
+A **function** $f: A \to B$ is a relation where every element of $A$ maps to **exactly one** element of $B$.
+
+<Tabs>
+<Tab label="Injective (One-to-One)">
+$f$ is **injective** if $f(a_1) = f(a_2) \implies a_1 = a_2$.
+
+No two inputs map to the same output. Think of it as "no collisions."
+
+$$
+\forall a_1, a_2 \in A: f(a_1) = f(a_2) \implies a_1 = a_2
+$$
+</Tab>
+
+<Tab label="Surjective (Onto)">
+$f$ is **surjective** if for every $b \in B$, there exists $a \in A$ with $f(a) = b$.
+
+Every element in the codomain is "hit" by at least one input.
+
+$$
+\forall b \in B, \exists a \in A: f(a) = b
+$$
+</Tab>
+
+<Tab label="Bijective">
+$f$ is **bijective** if it is both injective and surjective.
+
+A bijection establishes a perfect one-to-one correspondence between $A$ and $B$, meaning $|A| = |B|$.
+</Tab>
+</Tabs>
+
+<Callout type="warning">
+In programming, a **hash function** is designed to be surjective (cover the hash space) but is explicitly **not** injective (collisions are expected). Understanding these properties helps you reason about hash table performance.
+</Callout>
+
+## Combinatorics
+
+Combinatorics answers the question: **"How many ways can we...?"**
+
+### The Multiplication Principle
+
+If task 1 can be done in $m$ ways and task 2 in $n$ ways, the combined tasks can be done in $m \times n$ ways.
+
+### Permutations
+
+The number of ways to arrange $r$ items from $n$ distinct items (order matters):
+
+$$
+P(n, r) = \frac{n!}{(n-r)!}
+$$
+
+### Combinations
+
+The number of ways to choose $r$ items from $n$ distinct items (order doesn't matter):
+
+$$
+\binom{n}{r} = \frac{n!}{r!(n-r)!}
+$$
+
+<MathBlock>
+\text{Key identity: } \binom{n}{r} = \binom{n}{n-r}
+</MathBlock>
+
+```python
+from math import comb, perm, factorial
+
+n, r = 10, 3
+
+print(f"P({n},{r}) = {perm(n, r)}")     # 720
+print(f"C({n},{r}) = {comb(n, r)}")      # 120
+print(f"{n}! = {factorial(n)}")           # 3628800
+
+# Pascal's triangle (first 8 rows)
+print("\nPascal's Triangle:")
+for row in range(8):
+    values = [comb(row, k) for k in range(row + 1)]
+    padding = "  " * (7 - row)
+    print(f"{padding}{' '.join(f'{v:3d}' for v in values)}")
+```
+
+### The Binomial Theorem
+
+For any non-negative integer $n$:
+
+$$
+(x + y)^n = \sum_{k=0}^{n} \binom{n}{k} x^{n-k} y^k
+$$
+
+<Collapse title="Example: Expand (x + y)⁴">
+
+Using the binomial theorem with $n = 4$:
+
+$$
+(x+y)^4 = \binom{4}{0}x^4 + \binom{4}{1}x^3y + \binom{4}{2}x^2y^2 + \binom{4}{3}xy^3 + \binom{4}{4}y^4
+$$
+
+$$
+= x^4 + 4x^3y + 6x^2y^2 + 4xy^3 + y^4
+$$
+
+The coefficients $1, 4, 6, 4, 1$ are exactly the 5th row of Pascal's triangle!
+</Collapse>
+
+### Pigeonhole Principle
+
+If $n + 1$ objects are placed into $n$ boxes, at least one box contains two or more objects.
+
+<Callout type="info">
+**Application in CS**: If a hash table with $n$ slots receives $n + 1$ keys, at least one collision is guaranteed. This is why hash tables need collision resolution strategies.
+</Callout>
+
+## Bringing It Together
+
+Relations, functions, and combinatorics aren't isolated topics — they interweave constantly:
+
+- Equivalence relations **partition** sets → counting partitions is combinatorics
+- Bijections between sets prove they have the **same cardinality** → a counting technique
+- The number of functions $f: A \to B$ is $|B|^{|A|}$ → the multiplication principle
+
+These core concepts prepare you for the **Advanced Topics** module, where we'll explore graph theory and recurrence relations.

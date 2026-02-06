@@ -1,0 +1,21 @@
+name: Trigger Main Build
+
+# When content is pushed to main, notify the Wikipefia main repo
+# to rebuild the site with fresh content.
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  trigger:
+    name: Dispatch to main repo
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Wikipefia rebuild
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.MAIN_REPO_PAT }}
+          repository: org/wikipefia
+          event-type: content-updated
+          client-payload: '{"repo": "${{ github.repository }}", "sha": "${{ github.sha }}", "ref": "${{ github.ref }}"}'

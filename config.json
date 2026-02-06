@@ -1,0 +1,58 @@
+{
+  "slug": "discrete-mathematics",
+  "name": {
+    "ru": "Дискретная математика",
+    "en": "Discrete Mathematics",
+    "cz": "Diskrétní matematika"
+  },
+  "description": {
+    "ru": "Логика, комбинаторика, теория графов, теория множеств и их приложения в информатике",
+    "en": "Logic, combinatorics, graph theory, set theory, and their applications in computer science",
+    "cz": "Logika, kombinatorika, teorie grafů, teorie množin a jejich aplikace v informatice"
+  },
+  "teachers": ["ivan-petrov", "maria-novakova"],
+  "keywords": {
+    "ru": ["дискретная математика", "графы", "логика", "комбинаторика", "множества", "рекурсия", "алгоритмы"],
+    "en": ["discrete mathematics", "graphs", "logic", "combinatorics", "sets", "recursion", "algorithms"],
+    "cz": ["diskrétní matematika", "grafy", "logika", "kombinatorika", "množiny", "rekurze", "algoritmy"]
+  },
+  "categories": [
+    {
+      "slug": "foundations",
+      "name": {
+        "ru": "Основы",
+        "en": "Foundations",
+        "cz": "Základy"
+      },
+      "articles": ["introduction", "core-concepts"]
+    },
+    {
+      "slug": "advanced",
+      "name": {
+        "ru": "Продвинутые темы",
+        "en": "Advanced Topics",
+        "cz": "Pokročilá témata"
+      },
+      "articles": ["advanced-topics"]
+    },
+    {
+      "slug": "practice",
+      "name": {
+        "ru": "Практика",
+        "en": "Practice",
+        "cz": "Praxe"
+      },
+      "articles": ["practice-problems"]
+    }
+  ],
+  "metadata": {
+    "semester": 2,
+    "credits": 6,
+    "difficulty": "medium",
+    "department": {
+      "ru": "Кафедра прикладной математики и информатики",
+      "en": "Department of Applied Mathematics and Computer Science",
+      "cz": "Katedra aplikované matematiky a informatiky"
+    }
+  }
+}

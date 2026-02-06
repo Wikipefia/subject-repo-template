@@ -1,0 +1,221 @@
+---
+title:
+  ru: "Введение в дискретную математику"
+  en: "Introduction to Discrete Mathematics"
+  cz: "Úvod do diskrétní matematiky"
+slug: "introduction"
+author: "ivan-petrov"
+keywords:
+  ru: ["логика", "множества", "доказательства", "основы"]
+  en: ["logic", "sets", "proofs", "foundations"]
+  cz: ["logika", "množiny", "důkazy", "základy"]
+created: "2025-01-15"
+updated: "2025-08-20"
+difficulty: "beginner"
+estimatedReadTime: 12
+---
+
+# Introduction to Discrete Mathematics
+
+Discrete mathematics studies mathematical structures that are fundamentally **discrete** — not continuous. Where calculus deals with smooth curves and infinitesimal changes, discrete math works with distinct, separated values: integers, graphs, logical statements.
+
+<Callout type="info">
+This is a foundational article. No prerequisites are needed — start here if you're new to the course.
+</Callout>
+
+## Propositional Logic
+
+A **proposition** is a declarative statement that is either true or false, but not both.
+
+| Proposition | Truth Value |
+|---|---|
+| "2 + 2 = 4" | True |
+| "The Earth is flat" | False |
+| "Is it raining?" | Not a proposition (question) |
+| "x + 1 = 5" | Not a proposition (depends on x) |
+
+### Logical Connectives
+
+Propositions can be combined using logical connectives:
+
+<Tabs>
+<Tab label="AND (∧)">
+The conjunction $p \land q$ is true only when **both** $p$ and $q$ are true.
+
+| $p$ | $q$ | $p \land q$ |
+|---|---|---|
+| T | T | T |
+| T | F | F |
+| F | T | F |
+| F | F | F |
+</Tab>
+
+<Tab label="OR (∨)">
+The disjunction $p \lor q$ is true when **at least one** of $p$ or $q$ is true.
+
+| $p$ | $q$ | $p \lor q$ |
+|---|---|---|
+| T | T | T |
+| T | F | T |
+| F | T | T |
+| F | F | F |
+</Tab>
+
+<Tab label="NOT (¬)">
+The negation $\lnot p$ flips the truth value.
+
+| $p$ | $\lnot p$ |
+|---|---|
+| T | F |
+| F | T |
+</Tab>
+
+<Tab label="IMPLIES (→)">
+The implication $p \to q$ is false **only** when $p$ is true and $q$ is false.
+
+| $p$ | $q$ | $p \to q$ |
+|---|---|---|
+| T | T | T |
+| T | F | F |
+| F | T | T |
+| F | F | T |
+
+> The "vacuously true" cases (when $p$ is false) are often counterintuitive at first!
+</Tab>
+</Tabs>
+
+### De Morgan's Laws
+
+Two fundamental equivalences for negating compound statements:
+
+$$
+\lnot(p \land q) \equiv (\lnot p) \lor (\lnot q)
+$$
+
+$$
+\lnot(p \lor q) \equiv (\lnot p) \land (\lnot q)
+$$
+
+<Callout type="warning">
+De Morgan's Laws are used **everywhere** in programming. When you negate a compound `if` condition, you're applying De Morgan's. Getting this wrong is one of the most common sources of logic bugs.
+</Callout>
+
+## Set Theory Basics
+
+A **set** is an unordered collection of distinct objects called **elements** or **members**.
+
+### Notation
+
+```python
+# Python sets mirror mathematical set notation
+A = {1, 2, 3, 4, 5}
+B = {3, 4, 5, 6, 7}
+
+# Membership
+print(3 in A)       # True  (3 ∈ A)
+print(6 in A)       # False (6 ∉ A)
+
+# Set operations
+union = A | B        # {1, 2, 3, 4, 5, 6, 7}  (A ∪ B)
+intersection = A & B # {3, 4, 5}               (A ∩ B)
+difference = A - B   # {1, 2}                  (A \ B)
+sym_diff = A ^ B     # {1, 2, 6, 7}           (A △ B)
+
+print(f"A ∪ B = {union}")
+print(f"A ∩ B = {intersection}")
+print(f"A \\ B = {difference}")
+```
+
+### Cardinality
+
+The **cardinality** of a set $A$, written $|A|$, is the number of elements it contains.
+
+For finite sets $A$ and $B$, the **inclusion-exclusion principle** states:
+
+$$
+|A \cup B| = |A| + |B| - |A \cap B|
+$$
+
+<Collapse title="Proof of Inclusion-Exclusion for Two Sets">
+
+**Proof.** Partition $A \cup B$ into three disjoint regions:
+1. Elements in $A$ only: $A \setminus B$
+2. Elements in $B$ only: $B \setminus A$
+3. Elements in both: $A \cap B$
+
+Then:
+$$|A \cup B| = |A \setminus B| + |B \setminus A| + |A \cap B|$$
+
+Since $|A| = |A \setminus B| + |A \cap B|$, we get $|A \setminus B| = |A| - |A \cap B|$.
+
+Similarly, $|B \setminus A| = |B| - |A \cap B|$.
+
+Substituting:
+$$|A \cup B| = (|A| - |A \cap B|) + (|B| - |A \cap B|) + |A \cap B| = |A| + |B| - |A \cap B|$$
+
+$\blacksquare$
+</Collapse>
+
+## Proof Techniques
+
+Mathematical proofs are the currency of discrete mathematics. Here are the main techniques:
+
+### Direct Proof
+
+To prove $p \to q$: assume $p$ is true, then show $q$ follows.
+
+<MathBlock>
+\text{Theorem: If } n \text{ is even, then } n^2 \text{ is even.}
+</MathBlock>
+
+**Proof.** Let $n$ be even. Then $n = 2k$ for some integer $k$. Therefore $n^2 = (2k)^2 = 4k^2 = 2(2k^2)$, which is even. $\blacksquare$
+
+### Proof by Contradiction
+
+To prove $p$: assume $\lnot p$, then derive a contradiction.
+
+<Collapse title="Example: √2 is irrational (classic proof by contradiction)">
+
+**Proof.** Suppose, for contradiction, that $\sqrt{2}$ is rational. Then $\sqrt{2} = \frac{a}{b}$ where $a, b$ are integers with no common factors.
+
+Squaring both sides: $2 = \frac{a^2}{b^2}$, so $a^2 = 2b^2$.
+
+This means $a^2$ is even, so $a$ must be even. Write $a = 2c$.
+
+Then $(2c)^2 = 2b^2$, giving $4c^2 = 2b^2$, so $b^2 = 2c^2$.
+
+This means $b$ is also even — contradicting our assumption that $a$ and $b$ share no common factors. $\blacksquare$
+</Collapse>
+
+### Proof by Induction
+
+To prove a statement $P(n)$ holds for all $n \geq n_0$:
+1. **Base case**: Show $P(n_0)$ is true
+2. **Inductive step**: Show that $P(k) \to P(k+1)$ for all $k \geq n_0$
+
+<Callout type="info">
+Mathematical induction is like dominoes: knock the first one over (base case), and show that each domino knocks over the next (inductive step). All dominoes fall.
+</Callout>
+
+**Example**: Prove that $\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$ for all $n \geq 1$.
+
+```python
+def sum_formula(n: int) -> int:
+    """Closed-form sum: 1 + 2 + ... + n"""
+    return n * (n + 1) // 2
+
+# Verify for several values
+for n in range(1, 11):
+    brute_force = sum(range(1, n + 1))
+    formula = sum_formula(n)
+    assert brute_force == formula, f"Mismatch at n={n}"
+    print(f"n={n:2d}: sum = {formula}")
+```
+
+## What's Next
+
+With logic, sets, and proof techniques in your toolkit, you're ready to move on to **Core Concepts** — where we'll explore relations, functions, and combinatorics in depth.
+
+<Callout type="info">
+**Recommended next**: [Core Concepts](/discrete-mathematics/core-concepts) — builds directly on the foundations covered here.
+</Callout>

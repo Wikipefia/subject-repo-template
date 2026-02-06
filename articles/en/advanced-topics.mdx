@@ -1,0 +1,291 @@
+---
+title:
+  ru: "Продвинутые темы"
+  en: "Advanced Topics"
+  cz: "Pokročilá témata"
+slug: "advanced-topics"
+author: "maria-novakova"
+keywords:
+  ru: ["графы", "рекуррентные соотношения", "производящие функции", "деревья"]
+  en: ["graphs", "recurrence relations", "generating functions", "trees"]
+  cz: ["grafy", "rekurentní vztahy", "vytvořující funkce", "stromy"]
+created: "2025-03-01"
+updated: "2025-09-10"
+difficulty: "advanced"
+estimatedReadTime: 25
+prerequisites:
+  - "introduction"
+  - "core-concepts"
+tutors:
+  - "maria-novakova"
+  - "ivan-petrov"
+---
+
+# Advanced Topics
+
+With foundations and core concepts established, we now enter the territory that bridges pure mathematics and real-world algorithms: **graph theory**, **recurrence relations**, and **generating functions**.
+
+<Callout type="warning">
+This article assumes familiarity with sets, relations, functions, and basic combinatorics. If you haven't completed the prerequisites, do so first — the material here builds directly on them.
+</Callout>
+
+## Graph Theory
+
+A **graph** $G = (V, E)$ consists of a set of **vertices** $V$ and a set of **edges** $E$ connecting pairs of vertices.
+
+### Types of Graphs
+
+<Tabs>
+<Tab label="Undirected">
+Edges have no direction: $\{u, v\} \in E$ means $u$ and $v$ are connected symmetrically.
+
+**Examples**: Social networks (friendship is mutual), road networks (two-way streets).
+</Tab>
+
+<Tab label="Directed">
+Edges are ordered pairs: $(u, v) \in E$ means there's a directed edge from $u$ to $v$.
+
+**Examples**: Web links (page A links to page B), Twitter follows, dependency graphs.
+</Tab>
+
+<Tab label="Weighted">
+Each edge carries a numerical weight $w(u, v)$.
+
+**Examples**: Road distances, network latencies, cost matrices.
+</Tab>
+
+<Tab label="Trees">
+A connected acyclic graph. A tree on $n$ vertices has exactly $n - 1$ edges.
+
+**Key property** (Cayley's formula): The number of labeled trees on $n$ vertices is $n^{n-2}$.
+</Tab>
+</Tabs>
+
+### Graph Representations
+
+<Tabs>
+<Tab label="Adjacency Matrix">
+```python
+import numpy as np
+
+# Graph: 0--1, 0--2, 1--2, 2--3
+n = 4
+adj_matrix = np.zeros((n, n), dtype=int)
+edges = [(0, 1), (0, 2), (1, 2), (2, 3)]
+for u, v in edges:
+    adj_matrix[u][v] = 1
+    adj_matrix[v][u] = 1  # undirected
+
+print("Adjacency Matrix:")
+print(adj_matrix)
+```
+
+**Space**: $O(|V|^2)$. Best for dense graphs.
+</Tab>
+
+<Tab label="Adjacency List">
+```python
+from collections import defaultdict
+
+adj_list = defaultdict(list)
+edges = [(0, 1), (0, 2), (1, 2), (2, 3)]
+for u, v in edges:
+    adj_list[u].append(v)
+    adj_list[v].append(u)  # undirected
+
+print("Adjacency List:")
+for vertex, neighbors in sorted(adj_list.items()):
+    print(f"  {vertex}: {neighbors}")
+```
+
+**Space**: $O(|V| + |E|)$. Best for sparse graphs.
+</Tab>
+</Tabs>
+
+### Graph Traversal
+
+<Figure src="/assets/graph-traversal.svg" alt="BFS vs DFS traversal comparison" caption="Breadth-First Search explores level by level; Depth-First Search goes as deep as possible first." />
+
+```python
+from collections import deque
+
+def bfs(graph: dict, start: int) -> list[int]:
+    """Breadth-First Search — explores level by level."""
+    visited = set()
+    queue = deque([start])
+    order = []
+
+    while queue:
+        node = queue.popleft()
+        if node in visited:
+            continue
+        visited.add(node)
+        order.append(node)
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                queue.append(neighbor)
+
+    return order
+
+def dfs(graph: dict, start: int) -> list[int]:
+    """Depth-First Search — explores as deep as possible."""
+    visited = set()
+    order = []
+
+    def explore(node: int):
+        if node in visited:
+            return
+        visited.add(node)
+        order.append(node)
+        for neighbor in graph[node]:
+            explore(neighbor)
+
+    explore(start)
+    return order
+
+# Example graph
+graph = {0: [1, 2], 1: [0, 2], 2: [0, 1, 3], 3: [2]}
+print(f"BFS from 0: {bfs(graph, 0)}")  # [0, 1, 2, 3]
+print(f"DFS from 0: {dfs(graph, 0)}")  # [0, 1, 2, 3]
+```
+
+### Euler's Formula for Planar Graphs
+
+For any connected planar graph:
+
+$$
+V - E + F = 2
+$$
+
+where $V$ is the number of vertices, $E$ is the number of edges, and $F$ is the number of faces (including the outer infinite face).
+
+<Collapse title="Proof sketch using induction on edges">
+
+**Base case**: A tree on $n$ vertices has $V = n$, $E = n - 1$, $F = 1$ (just the outer face).
+
+$$V - E + F = n - (n-1) + 1 = 2 \checkmark$$
+
+**Inductive step**: Given a connected planar graph $G$ with $V - E + F = 2$, adding one edge either:
+1. Connects to a new vertex: $V$ increases by 1, $E$ increases by 1, $F$ stays → still 2.
+2. Creates a cycle (new face): $V$ stays, $E$ increases by 1, $F$ increases by 1 → still 2. $\blacksquare$
+</Collapse>
+
+## Recurrence Relations
+
+A **recurrence relation** defines a sequence where each term depends on previous terms.
+
+### The Fibonacci Sequence
+
+The quintessential recurrence:
+
+$$
+F(n) = F(n-1) + F(n-2), \quad F(0) = 0, \quad F(1) = 1
+$$
+
+<CodePlayground language="python">
+def fib_naive(n: int) -> int:
+    """Naive recursive Fibonacci — O(2^n) time!"""
+    if n <= 1:
+        return n
+    return fib_naive(n - 1) + fib_naive(n - 2)
+
+def fib_dp(n: int) -> int:
+    """Dynamic programming Fibonacci — O(n) time."""
+    if n <= 1:
+        return n
+    prev, curr = 0, 1
+    for _ in range(2, n + 1):
+        prev, curr = curr, prev + curr
+    return curr
+
+# Compare
+for i in range(10):
+    assert fib_naive(i) == fib_dp(i)
+    print(f"F({i}) = {fib_dp(i)}")
+</CodePlayground>
+
+### Solving Linear Recurrences
+
+A linear homogeneous recurrence $a_n = c_1 a_{n-1} + c_2 a_{n-2} + \cdots + c_k a_{n-k}$ is solved via its **characteristic equation**:
+
+$$
+x^k - c_1 x^{k-1} - c_2 x^{k-2} - \cdots - c_k = 0
+$$
+
+<Callout type="info">
+The Fibonacci recurrence $F(n) = F(n-1) + F(n-2)$ has characteristic equation $x^2 - x - 1 = 0$, giving roots $\phi = \frac{1+\sqrt{5}}{2}$ (the golden ratio) and $\hat{\phi} = \frac{1-\sqrt{5}}{2}$.
+
+The closed-form solution is **Binet's formula**:
+
+$$F(n) = \frac{\phi^n - \hat{\phi}^n}{\sqrt{5}}$$
+</Callout>
+
+### Master Theorem (for Divide-and-Conquer Recurrences)
+
+For recurrences of the form $T(n) = aT(n/b) + O(n^d)$:
+
+$$
+T(n) = \begin{cases}
+O(n^d) & \text{if } d > \log_b a \\
+O(n^d \log n) & \text{if } d = \log_b a \\
+O(n^{\log_b a}) & \text{if } d < \log_b a
+\end{cases}
+$$
+
+| Algorithm | Recurrence | Case | Complexity |
+|---|---|---|---|
+| Binary Search | $T(n) = T(n/2) + O(1)$ | $d = 0 = \log_2 1$ | $O(\log n)$ |
+| Merge Sort | $T(n) = 2T(n/2) + O(n)$ | $d = 1 = \log_2 2$ | $O(n \log n)$ |
+| Karatsuba Multiplication | $T(n) = 3T(n/2) + O(n)$ | $d = 1 < \log_2 3$ | $O(n^{1.585})$ |
+| Strassen Matrix Multiply | $T(n) = 7T(n/2) + O(n^2)$ | $d = 2 < \log_2 7$ | $O(n^{2.807})$ |
+
+## Generating Functions
+
+A **generating function** encodes a sequence $(a_0, a_1, a_2, \ldots)$ as a formal power series:
+
+$$
+G(x) = \sum_{n=0}^{\infty} a_n x^n = a_0 + a_1 x + a_2 x^2 + \cdots
+$$
+
+<Callout type="error">
+Generating functions are a **formal** algebraic tool. We don't actually evaluate the series — we manipulate it symbolically. Don't worry about convergence unless you're doing analysis.
+</Callout>
+
+### Example: Counting Coin Change
+
+How many ways can you make change for $n$ cents using coins of 1¢, 5¢, and 10¢?
+
+The generating function is:
+
+$$
+G(x) = \frac{1}{(1-x)(1-x^5)(1-x^{10})}
+$$
+
+The coefficient of $x^n$ in the expansion gives the number of ways to make $n$ cents.
+
+```python
+def coin_change_count(amount: int, coins: list[int] = [1, 5, 10]) -> int:
+    """Count ways to make change using dynamic programming."""
+    dp = [0] * (amount + 1)
+    dp[0] = 1  # one way to make 0 cents: use no coins
+
+    for coin in coins:
+        for i in range(coin, amount + 1):
+            dp[i] += dp[i - coin]
+
+    return dp[amount]
+
+for n in [10, 25, 50, 100]:
+    ways = coin_change_count(n)
+    print(f"  {n:3d}¢ → {ways} ways")
+```
+
+## Summary
+
+Graph theory, recurrences, and generating functions are the power tools of discrete mathematics:
+
+- **Graphs** model relationships and enable algorithms for pathfinding, scheduling, and optimization
+- **Recurrence relations** analyze recursive algorithms and describe sequences
+- **Generating functions** provide algebraic machinery for counting problems
+
+These topics form the bridge between mathematical theory and the algorithmic thinking required in computer science.

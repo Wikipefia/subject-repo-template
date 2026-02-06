@@ -1,0 +1,80 @@
+---
+title:
+  ru: "Введение в дискретную математику"
+  en: "Introduction to Discrete Mathematics"
+  cz: "Úvod do diskrétní matematiky"
+slug: "introduction"
+author: "ivan-petrov"
+keywords:
+  ru: ["логика", "множества", "доказательства", "основы"]
+  en: ["logic", "sets", "proofs", "foundations"]
+  cz: ["logika", "množiny", "důkazy", "základy"]
+created: "2025-01-15"
+updated: "2025-08-20"
+difficulty: "beginner"
+estimatedReadTime: 12
+---
+
+# Úvod do diskrétní matematiky
+
+Diskrétní matematika studuje matematické struktury, které jsou svou podstatou **diskrétní** — nikoli spojité. Zatímco matematická analýza pracuje s hladkými křivkami, diskrétní matematika operuje s odlišitelnými, oddělenými hodnotami: celými čísly, grafy, logickými výroky.
+
+<Callout type="info">
+Toto je úvodní článek. Nejsou potřeba žádné předpoklady — začněte zde, pokud jste v kurzu noví.
+</Callout>
+
+## Výroková logika
+
+**Výrok** je oznamovací věta, která je buď pravdivá, nebo nepravdivá, ale ne obojí.
+
+| Výrok | Pravdivostní hodnota |
+|---|---|
+| "2 + 2 = 4" | Pravda |
+| "Země je plochá" | Nepravda |
+| "Prší?" | Není výrok (otázka) |
+
+### Logické spojky
+
+- **Konjunkce** ($p \land q$): pravdivá pouze když jsou oba $p$ i $q$ pravdivé
+- **Disjunkce** ($p \lor q$): pravdivá když alespoň jedno z $p$, $q$ je pravdivé
+- **Negace** ($\lnot p$): obrací pravdivostní hodnotu
+- **Implikace** ($p \to q$): nepravdivá pouze když $p$ je pravdivé a $q$ nepravdivé
+
+### De Morganovy zákony
+
+$$
+\lnot(p \land q) \equiv (\lnot p) \lor (\lnot q)
+$$
+
+$$
+\lnot(p \lor q) \equiv (\lnot p) \land (\lnot q)
+$$
+
+## Základy teorie množin
+
+**Množina** je neuspořádaná kolekce různých objektů nazývaných **prvky**.
+
+```python
+A = {1, 2, 3, 4, 5}
+B = {3, 4, 5, 6, 7}
+
+sjednoceni = A | B    # {1, 2, 3, 4, 5, 6, 7}  (A ∪ B)
+prunik = A & B        # {3, 4, 5}               (A ∩ B)
+rozdil = A - B        # {1, 2}                  (A \ B)
+```
+
+### Princip inkluze a exkluze
+
+$$
+|A \cup B| = |A| + |B| - |A \cap B|
+$$
+
+## Důkazové techniky
+
+1. **Přímý důkaz**: předpokládejte $p$, ukažte $q$
+2. **Důkaz sporem**: předpokládejte $\lnot p$, odvoďte rozpor
+3. **Matematická indukce**: bazový případ + indukční krok
+
+<Callout type="info">
+Matematická indukce je jako domino: svalte první kostku (bazový případ) a ukažte, že každá kostka svalí další (indukční krok).
+</Callout>

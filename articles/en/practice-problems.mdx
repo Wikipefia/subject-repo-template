@@ -1,0 +1,268 @@
+---
+title:
+  ru: "Практические задачи"
+  en: "Practice Problems"
+  cz: "Praktické úlohy"
+slug: "practice-problems"
+author: "ivan-petrov"
+keywords:
+  ru: ["задачи", "упражнения", "тесты", "практика"]
+  en: ["problems", "exercises", "quizzes", "practice"]
+  cz: ["úlohy", "cvičení", "kvízy", "praxe"]
+created: "2025-04-01"
+updated: "2025-09-15"
+difficulty: "intermediate"
+estimatedReadTime: 20
+prerequisites:
+  - "introduction"
+  - "core-concepts"
+tutors:
+  - "ivan-petrov"
+---
+
+# Practice Problems
+
+Theory without practice is incomplete. This article provides interactive problems covering logic, sets, combinatorics, and graphs — test your understanding with quizzes, code challenges, and worked examples.
+
+<Callout type="info">
+Work through each section in order. The quizzes provide immediate feedback, and the code playgrounds let you experiment with solutions.
+</Callout>
+
+## Section 1: Logic
+
+### Quiz — Truth Tables
+
+<Quiz>
+<Question text="What is the truth value of (T → F) ∧ (F → T)?">
+  <Option value="true">True</Option>
+  <Option value="false" correct>False</Option>
+</Question>
+
+<Question text="Which logical connective has this truth table: TT→T, TF→T, FT→F, FF→T?">
+  <Option value="and">AND (∧)</Option>
+  <Option value="or">OR (∨)</Option>
+  <Option value="implies">IMPLIES (→)</Option>
+  <Option value="biconditional" correct>BICONDITIONAL (↔)</Option>
+</Question>
+
+<Question text="De Morgan's Law: ¬(p ∧ q) is equivalent to...">
+  <Option value="a">¬p ∧ ¬q</Option>
+  <Option value="b" correct>¬p ∨ ¬q</Option>
+  <Option value="c">p ∨ q</Option>
+  <Option value="d">¬p → ¬q</Option>
+</Question>
+</Quiz>
+
+### Practice — Boolean Simplification
+
+Simplify the following boolean expression using logical equivalences:
+
+$$
+\lnot(\lnot p \lor q) \lor (p \land q)
+$$
+
+<Collapse title="Show step-by-step solution">
+
+1. Apply De Morgan's to $\lnot(\lnot p \lor q)$:
+$$= (\lnot\lnot p \land \lnot q) \lor (p \land q)$$
+
+2. Double negation on $\lnot\lnot p$:
+$$= (p \land \lnot q) \lor (p \land q)$$
+
+3. Factor out $p$ (distributive law):
+$$= p \land (\lnot q \lor q)$$
+
+4. Since $\lnot q \lor q$ is a tautology (always true):
+$$= p \land T = p$$
+
+**Result**: The expression simplifies to just $p$.
+</Collapse>
+
+## Section 2: Sets and Counting
+
+### Quiz — Set Operations
+
+<Quiz>
+<Question text="If A = {1,2,3,4} and B = {3,4,5,6}, what is |A ∪ B|?">
+  <Option value="4">4</Option>
+  <Option value="6" correct>6</Option>
+  <Option value="8">8</Option>
+  <Option value="2">2</Option>
+</Question>
+
+<Question text="How many subsets does a set with 5 elements have?">
+  <Option value="5">5</Option>
+  <Option value="10">10</Option>
+  <Option value="25">25</Option>
+  <Option value="32" correct>32</Option>
+</Question>
+
+<Question text="C(10, 3) = ?">
+  <Option value="720">720</Option>
+  <Option value="120" correct>120</Option>
+  <Option value="1000">1000</Option>
+  <Option value="30">30</Option>
+</Question>
+</Quiz>
+
+### Code Challenge — Powerset Generator
+
+Write a function that generates the powerset (set of all subsets) of a given set.
+
+<CodePlayground language="python">
+def powerset(s: set) -> list[set]:
+    """Generate all subsets of set s.
+
+    Hint: For each element, you can either include it or not.
+    Total subsets = 2^|s|
+
+    Try to implement this!
+    """
+    result = [set()]  # Start with empty set
+
+    for elem in s:
+        # For each existing subset, create a new subset that includes elem
+        new_subsets = [subset | {elem} for subset in result]
+        result.extend(new_subsets)
+
+    return result
+
+# Test
+s = {1, 2, 3}
+ps = powerset(s)
+print(f"Powerset of {s}:")
+for subset in sorted(ps, key=lambda x: (len(x), sorted(x))):
+    print(f"  {subset}")
+print(f"\nTotal subsets: {len(ps)} (expected: {2**len(s)})")
+</CodePlayground>
+
+## Section 3: Combinatorics
+
+### The Birthday Problem
+
+What's the probability that in a room of $n$ people, at least two share a birthday?
+
+$$
+P(\text{at least one match}) = 1 - \frac{365!}{365^n \cdot (365-n)!}
+$$
+
+<CodePlayground language="python">
+from math import comb, factorial
+import random
+
+def birthday_probability(n: int) -> float:
+    """Exact probability of a birthday collision in n people."""
+    if n > 365:
+        return 1.0
+    # Probability of NO collision
+    p_no_collision = 1.0
+    for i in range(n):
+        p_no_collision *= (365 - i) / 365
+    return 1 - p_no_collision
+
+def birthday_simulation(n: int, trials: int = 10000) -> float:
+    """Monte Carlo simulation of the birthday problem."""
+    collisions = 0
+    for _ in range(trials):
+        birthdays = [random.randint(1, 365) for _ in range(n)]
+        if len(set(birthdays)) < n:
+            collisions += 1
+    return collisions / trials
+
+print("Birthday Problem:")
+print(f"{'n':>4} | {'Exact':>8} | {'Simulated':>10}")
+print("-" * 30)
+for n in [10, 20, 23, 30, 50, 70]:
+    exact = birthday_probability(n)
+    simulated = birthday_simulation(n)
+    print(f"{n:4d} | {exact:8.4f} | {simulated:10.4f}")
+</CodePlayground>
+
+<Callout type="info">
+With just 23 people, there's a >50% chance of a birthday match! This result surprises most people and is a classic example of how human intuition about probability is often wrong.
+</Callout>
+
+## Section 4: Graphs
+
+### Quiz — Graph Properties
+
+<Quiz>
+<Question text="A tree with 10 vertices has how many edges?">
+  <Option value="10">10</Option>
+  <Option value="9" correct>9</Option>
+  <Option value="11">11</Option>
+  <Option value="20">20</Option>
+</Question>
+
+<Question text="What is the maximum number of edges in a simple undirected graph with 6 vertices?">
+  <Option value="12">12</Option>
+  <Option value="15" correct>15</Option>
+  <Option value="30">30</Option>
+  <Option value="6">6</Option>
+</Question>
+
+<Question text="Which traversal uses a queue?">
+  <Option value="dfs">Depth-First Search (DFS)</Option>
+  <Option value="bfs" correct>Breadth-First Search (BFS)</Option>
+  <Option value="both">Both</Option>
+  <Option value="neither">Neither</Option>
+</Question>
+</Quiz>
+
+### Code Challenge — Shortest Path
+
+Implement Dijkstra's algorithm for finding the shortest path in a weighted graph.
+
+<CodePlayground language="python">
+import heapq
+
+def dijkstra(graph: dict, start: str) -> dict:
+    """Find shortest distances from start to all vertices.
+
+    graph: {vertex: [(neighbor, weight), ...]}
+    Returns: {vertex: shortest_distance}
+    """
+    distances = {v: float('inf') for v in graph}
+    distances[start] = 0
+    pq = [(0, start)]  # (distance, vertex)
+
+    while pq:
+        dist, u = heapq.heappop(pq)
+        if dist > distances[u]:
+            continue
+
+        for neighbor, weight in graph[u]:
+            new_dist = dist + weight
+            if new_dist < distances[neighbor]:
+                distances[neighbor] = new_dist
+                heapq.heappush(pq, (new_dist, neighbor))
+
+    return distances
+
+# Example graph
+graph = {
+    'A': [('B', 4), ('C', 2)],
+    'B': [('A', 4), ('C', 1), ('D', 5)],
+    'C': [('A', 2), ('B', 1), ('D', 8), ('E', 10)],
+    'D': [('B', 5), ('C', 8), ('E', 2)],
+    'E': [('C', 10), ('D', 2)],
+}
+
+distances = dijkstra(graph, 'A')
+print("Shortest distances from A:")
+for vertex, dist in sorted(distances.items()):
+    print(f"  A → {vertex}: {dist}")
+</CodePlayground>
+
+## Summary
+
+<Callout type="info">
+**How did you do?** If you answered most quiz questions correctly and completed the code challenges, you have a solid grasp of the material. If some topics were tricky, review the relevant articles in the Foundations and Advanced Topics categories.
+</Callout>
+
+Key takeaways from this practice session:
+
+1. **Logic**: Master De Morgan's laws and truth tables — they're the basis of all conditional reasoning
+2. **Counting**: The multiplication principle, permutations, and combinations appear in algorithm analysis constantly
+3. **Graphs**: Know both BFS and DFS, understand adjacency representations, and practice shortest-path algorithms
+4. **Practice > Theory**: The only way to get better is to solve more problems
